@@ -1,106 +1,52 @@
-from flask import Flask, request
+import re
 
-from school_edited import SchoolEdited
-from utils import NoDataError, User, get_time, get_timetable, return_response
+from flask import Flask, abort, request
+
+from utils import edit_info, get_cafeteria, get_timetable
 
 
 app = Flask("SingilE")
 
-school = SchoolEdited("신길중학교")
+
+@app.before_request
+def whitelist():
+    if re.match("219[.]249[.]231[.]4[012]", request.remote_addr) is None:
+        abort(404)
 
 
-@app.route("/timetabletoday", methods=["POST"])
-def timetable_today():
-    day, weekday, date_ = get_time(0)
-
-    payload = request.get_json()
-
-    user_info = User(payload)
-
-    try:
-        grade, class_ = user_info.get_sql_data()
-
-    except NoDataError:
-        text = """누락된 설정이 있어요.
-신길이 이용을 위해서 학년과 반 정보를 설정해 주세요.
-
-<명령어>
-오늘시간표, 내일시간표, 모레시간표, 정보설정, 도움말"""
-
-    else:
-        text = get_timetable(school, grade, class_, day, weekday, date_)
-
-    finally:
-        return return_response(text)
+@app.route("/todaytimetable", methods=["POST"])
+def today_timetable():
+    return get_timetable(0, request.get_json())
 
 
-@app.route("/timetablenextday", methods=["POST"])
-def timetable_next_day():
-    day, weekday, date_ = get_time(1)
-
-    payload = request.get_json()
-
-    user_info = User(payload)
-
-    try:
-        grade, class_ = user_info.get_sql_data()
-
-    except NoDataError:
-        text = """누락된 설정이 있어요.
-신길이 이용을 위해서 학년과 반 정보를 설정해 주세요.
-
-<명령어>
-오늘시간표, 내일시간표, 모레시간표, 정보설정, 도움말"""
-
-    else:
-        text = get_timetable(school, grade, class_, day, weekday, date_)
-
-    finally:
-        return return_response(text)
+@app.route("/nextdaytimetable", methods=["POST"])
+def next_day_timetable():
+    return get_timetable(1, request.get_json())
 
 
-@app.route("/timetablenextnextday", methods=["POST"])
-def timetable_next_next_day():
-    day, weekday, date_ = get_time(2)
-
-    payload = request.get_json()
-
-    user_info = User(payload)
-
-    try:
-        grade, class_ = user_info.get_sql_data()
-
-    except NoDataError:
-        text = """누락된 설정이 있어요.
-신길이 이용을 위해서 학년과 반 정보를 설정해 주세요.
-
-<명령어>
-오늘시간표, 내일시간표, 모레시간표, 정보설정, 도움말"""
-
-    else:
-        text = get_timetable(school, grade, class_, day, weekday, date_)
-
-    finally:
-        return return_response(text)
+@app.route("/nextnextdaytimetable", methods=["POST"])
+def next_next_day_timetable():
+    return get_timetable(2, request.get_json())
 
 
-@app.route("/editinfo", methods=["POST"])
-def edit_info():
-    payload = request.get_json()
+@app.route("/todaycafeteria", methods=["POST"])
+def today_cafeteria():
+    return get_cafeteria(0)
 
-    user_info = User(payload)
 
-    try:
-        user_info.edit_sql_data()
+@app.route("/nextdaycafeteria", methods=["POST"])
+def next_day_cafeteria():
+    return get_cafeteria(1)
 
-    except ValueError:
-        text = "입력하신 정보는 유효하지 않은 값이예요. 다시 시도해 주세요."
 
-    else:
-        text = "입력하신 정보가 성공적으로 반영되었어요."
+@app.route("/nextnextdaycafeteria", methods=["POST"])
+def next_next_day_cafeteria():
+    return get_cafeteria(2)
 
-    finally:
-        return return_response(text)
+
+@app.route("/infoedit", methods=["POST"])
+def info_edit():
+    return edit_info(request.get_json())
 
 
 if __name__ == "__main__":

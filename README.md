@@ -4,15 +4,15 @@
 
 ### 시간표 조회
 
-![오늘 시간표](images/timetable_today.png)
+![오늘 시간표](images/today_timetable.png)
 
-![내일 시간표](images/timetable_next_day.png)
+![내일 시간표](images/next_day_timetable.png)
 
-![모레 시간표](images/timetable_next_next_day.png)
+![모레 시간표](images/next_next_day_timetable.png)
 
 ### 사용자 정보 수정
 
-![정보 수정](images/edit_info.png)
+![정보 수정](images/info_edit.png)
 
 ### 도움말 출력
 
@@ -33,9 +33,9 @@
 
 ## TODO
 
-- [ ] Add docstring
-- [ ] Implement cafeteria feature
-- [ ] Use async/await
+- [ ] Add guideline
+- [ ] Consider using `__slots__`
+- [x] Implement cafeteria feature
 - [ ] Use FastAPI, instead of Flask
 
 ## License

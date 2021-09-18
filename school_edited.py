@@ -1,57 +1,49 @@
 from base64 import b64encode
 from json import loads
-from typing import List, Tuple
 
 from bs4 import BeautifulSoup
-from comcigan.reg import (
-    daydatareg,
-    extractint,
-    orgdatareg,
-    prefixreg,
-    regsearch,
-    routereg,
-    sbnamereg,
-    thnamereg,
-)
 from requests import get
 
+from reg import (
+    reg_daydata,
+    reg_prefix,
+    reg_route,
+    reg_sbname,
+    reg_thname,
+    extract_int,
+    search_reg,
+)
 
-def trim(lis):
-    while lis and not lis[-1]:
-        del lis[-1]
-    return lis
+
+def trim(list_):
+    while list_ and not list_[-1]:
+        del list_[-1]
+    return list_
 
 
 URL = "http://112.186.146.81:4082"
 
-comci_resp = get(f"{URL}/st")
-comci_resp.encoding = "EUC-KR"
+request = get(f"{URL}/st")
+request.encoding = "EUC-KR"
 
-comcigan_html = BeautifulSoup(comci_resp.text, "html.parser")
-script = comcigan_html.find_all("script")[1].contents[0]
+html = BeautifulSoup(request.text, "lxml")
+script = html.find_all("script")[1].contents[0]
 
-route = regsearch(routereg, script)
-PREFIX = regsearch(prefixreg, script)[1:-1]
+DAYNUM = extract_int(search_reg(reg_daydata, script))
+PREFIX = search_reg(reg_prefix, script)[1:-1]
+ROUTE = search_reg(reg_route, script)
+SBNUM = extract_int(search_reg(reg_sbname, script))
+THNUM = extract_int(search_reg(reg_thname, script))
 
-ORGNUM = extractint(regsearch(orgdatareg, script))
-DAYNUM = extractint(regsearch(daydatareg, script))
-THNUM = extractint(regsearch(thnamereg, script))
-SBNUM = extractint(regsearch(sbnamereg, script))
-
-BASEURL = f"{URL}{route[1:8]}"
-SEARCHURL = f"{BASEURL}{route[8:]}"
+BASEURL = f"{URL}{ROUTE[1:8]}"
+SEARCHURL = f"{BASEURL}{ROUTE[8:]}"
 
 
 class SchoolEdited:
-    __slots__ = ("name", "sccode", "_timeurl", "_week_data")
+    __slots__ = ("region", "name", "school_code", "_timeurl", "_week_data")
 
-    name: str
-    sccode: int
-    _timeurl: str
-    _week_data: List[List[List[List[Tuple[str, str, str]]]]]
-
-    def __init__(self, name: str):
-        sc_search = get(
+    def __init__(self, name):
+        school_search = get(
             SEARCHURL
             + "%".join(
                 str(name.encode("EUC-KR"))
@@ -60,30 +52,31 @@ class SchoolEdited:
                 .split("\\")
             )
         )
-        sc_search.encoding = "UTF-8"
-        sc_list = loads(sc_search.text.replace("\0", ""))["학교검색"]
+        school_search.encoding = "UTF-8"
+        school_list = loads(school_search.text.replace("\0", ""))["학교검색"]
 
-        if len(sc_list):
-            self.name = sc_list[0][2]
-            self.sccode = sc_list[0][3]
+        if len(school_list):
+            self.region = school_list[0][1]
+            self.name = school_list[0][2]
+            self.school_code = school_list[0][3]
 
         else:
             raise NameError("No schools have been searched by the name passed.")
 
         self._timeurl = f"{BASEURL}?" + b64encode(
-            f"{PREFIX}{str(self.sccode)}_0_1".encode("UTF-8")
+            f"{PREFIX}{str(self.school_code)}_0_1".encode("UTF-8")
         ).decode("UTF-8")
         self._week_data = [[[[("", "", "")]]]]
         self.refresh()
 
     def refresh(self):
-        time_res = get(self._timeurl)
-        time_res.encoding = "UTF-8"
-        rawtimetable = loads(time_res.text.replace("\0", ""))
+        timetable_request = get(self._timeurl)
+        timetable_request.encoding = "UTF-8"
+        timetable = loads(timetable_request.text.replace("\0", ""))
 
-        subjects: list = rawtimetable[f"자료{SBNUM}"]
-        long_subjects: list = rawtimetable[f"긴자료{SBNUM}"]
-        teachers: list = rawtimetable[f"자료{THNUM}"]
+        subjects = timetable[f"자료{SBNUM}"]
+        subjects_long = timetable[f"긴자료{SBNUM}"]
+        teachers = timetable[f"자료{THNUM}"]
 
         self._week_data = [
             [
@@ -91,28 +84,28 @@ class SchoolEdited:
                     [
                         (
                             subjects[int(str(x)[-2:])],
-                            long_subjects[int(str(x)[-2:])],
+                            subjects_long[int(str(x)[-2:])],
                             ""
                             if int(str(x)[:-2]) >= len(teachers)
                             else teachers[int(str(x)[:-2])],
                         )
-                        for x in filter(lambda x: str(x)[:-2], trim(oneday[1:]))
+                        for x in filter(lambda x: str(x)[:-2], trim(day[1:]))
                     ]
-                    for oneday in oneclass[1:6]
+                    for day in class_[1:6]
                 ]
-                for oneclass in onegrade
+                for class_ in grade
             ]
-            for onegrade in rawtimetable[f"자료{DAYNUM}"][1:]
+            for grade in timetable[f"자료{DAYNUM}"][1:]
         ]
 
-    def __getitem__(self, item: int) -> List:
+    def __getitem__(self, item):
         return self._week_data[item - 1]
-
-    def __repr__(self) -> str:
-        return f"School('{self.name}')"
-
-    def __str__(self) -> str:
-        return str(self._week_data)
 
     def __iter__(self):
         return iter(self._week_data)
+
+    def __repr__(self):
+        return f"School('{self.name}')"
+
+    def __str__(self):
+        return str(self._week_data)
