@@ -36,7 +36,7 @@
 - [ ] Add guideline
 - [ ] Consider using `__slots__`
 - [x] Implement cafeteria feature
-- [ ] Use FastAPI, instead of Flask
+- [x] Use FastAPI, instead of Flask
 
 ## License
 

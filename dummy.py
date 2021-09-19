@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 
-def leave_log(payload):
+def leave_log(payload: dict):
     logger = logging.getLogger()
 
     logger.setLevel(logging.INFO)

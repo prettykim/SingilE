@@ -8,9 +8,9 @@ reg_sbname = re.compile(r"자료.자료\d+\[sb\]")
 reg_thname = re.compile(r"성명=자료\.자료\d+")
 
 
-def extract_int(org):
+def extract_int(org: str) -> int:
     return int("".join([x for x in org if x.isdigit()]))
 
 
-def search_reg(reg, org):
+def search_reg(reg, org: str) -> str:
     return reg.search(org).group(0)
