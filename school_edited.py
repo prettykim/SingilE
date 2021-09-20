@@ -128,8 +128,8 @@ class _Constant:
 
 async def _async_request(url: str, encoding: str = None):
     async with ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.text(encoding)
+        async with session.get(url) as request:
+            return await request.text(encoding)
 
 
 def _trim(list_):

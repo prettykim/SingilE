@@ -170,6 +170,8 @@ class _Sql:
                         "INSERT INTO user VALUES (?, ?, ?)", (id_, grade, class_)
                     )
 
+                await db.commit()
+
             response = "입력하신 정보가 성공적으로 반영되었어요."
 
         return _return_response(response)
