@@ -67,30 +67,36 @@ class _Parser:
 
         day_and_month = ("0" + month if len(month) == 1 else month) + "." + day
 
-        response_head = [f"<{self.date_}({self.day}일) 급식>"]
-
         async with ClientSession() as session:
             async with session.get("https://singil.sen.ms.kr/index.do") as request:
                 html = await request.text()
 
-        soup = BeautifulSoup(html, "lxml").select_one(
-            f".school_menu_info > ul:nth-child({self.number + 1}) > li:nth-child(1) > dl:nth-child(1)"
-        )
+        soup = BeautifulSoup(html, "lxml")
 
-        if soup.select_one(f"dt:nth-child(1) > a:nth-child(1)").text.endswith(
-            day_and_month
-        ):
-            cafeteria = re.findall(
-                "[^ \r\n\t()0-9kcal]+",
-                soup.select_one(f"dd:nth-child(2) > p:nth-child(2)").text,
-            )
+        response = f"{self.date_}({self.day}일) 급식은 없어요."
 
-            response_head.extend(cafeteria)
+        for i in range(1, 4):
+            BASE_SELECTOR = f".school_menu_info > ul:nth-child({i}) > li:nth-child(1) > dl:nth-child(1) > "
 
-            response = "\n".join(response_head)
+            if soup.select_one(
+                BASE_SELECTOR + f"dt:nth-child(1) > a:nth-child(1)"
+            ).text.endswith(day_and_month):
+                response_head = [f"<{self.date_}({self.day}일) 급식>"]
 
-        else:
-            response = f"{self.date_}({self.day}일) 급식은 없어요."
+                cafeteria = re.findall(
+                    "[^ \r\n\t]+",
+                    soup.select_one(
+                        BASE_SELECTOR + f"dd:nth-child(2) > p:nth-child(2)"
+                    ).text,
+                )
+
+                response_head.extend(cafeteria)
+
+                response = "\n".join(response_head)
+
+                break
+
+            continue
 
         return _return_response(response)
 
