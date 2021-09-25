@@ -84,7 +84,7 @@ class _Parser:
                 response_head = [f"<{self.date_}({self.day}일) 급식>"]
 
                 cafeteria = re.findall(
-                    "[^ \r\n\t]+",
+                    "[^\t\n\r &\dkcal]+(?=[\n\r ])",
                     soup.select_one(
                         BASE_SELECTOR + f"dd:nth-child(2) > p:nth-child(2)"
                     ).text,
