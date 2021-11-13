@@ -1,3 +1,12 @@
 {
-    "python.formatting.provider": "black"
+    "editor.formatOnSave": true,
+    "files.exclude": {
+        ".venv/": true,
+        "__pycache__/": true
+    },
+    "python.formatting.provider": "black",
+    "python.linting.pylintArgs": [
+        "-d C0114,C0115,C0116"
+    ],
+    "python.linting.pylintEnabled": true
 }

@@ -4,19 +4,13 @@
 
 ### 시간표 조회
 
-![오늘 시간표](images/today_timetable.png)
+### 급식 조회
 
-![내일 시간표](images/next_day_timetable.png)
-
-![모레 시간표](images/next_next_day_timetable.png)
+### 학사일정 조회
 
 ### 사용자 정보 수정
 
-![정보 수정](images/info_edit.png)
-
 ### 도움말 출력
-
-![도움말](images/help_message.png)
 
 ## 시작하기
 
@@ -33,10 +27,9 @@
 
 ## TODO
 
+- [x] Implement cache
 - [ ] Add guideline
-- [ ] Consider using `__slots__`
-- [x] Implement cafeteria feature
-- [x] Use FastAPI, instead of Flask
+- [ ] Add images in README.md
 
 ## License
 

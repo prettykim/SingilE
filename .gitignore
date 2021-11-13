@@ -1,5 +1,5 @@
+.venv/
 __pycache__/
 
+backup/
 db.sqlite3
-
-.venv/
