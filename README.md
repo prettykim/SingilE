@@ -23,13 +23,14 @@
 - [버그 제보하기/기능 요청하기](https://github.com/HolyDiamonds7/SingilE/issues)
 - [바뀐 소스 코드](https://github.com/HolyDiamonds7/SingilE/pulls) 검토하기
 
-만약 소스 코드에 직접적으로 기여하고 싶으시다면, [가이드라인](GUIDELINE.md)을 확인해 주시기 바랍니다.
+만약 소스 코드에 직접적으로 기여하고 싶으시다면, [가이드라인](CONTRIBUTING.md)을 확인해 주시기 바랍니다.
 
 ## TODO
 
-- [x] Implement cache
-- [ ] Add guideline
+- [ ] Implement weather forecast
+- [ ] Implement lifetime of cache
 - [ ] Add images in README.md
+- [ ] Draw up guideline
 
 ## License
 

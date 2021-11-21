@@ -7,9 +7,11 @@ from uvicorn import run
 
 from singile.main import app
 
+CLEAR = "cls" if sys.platform == "win32" else "clear"
+
 
 def main():
-    cls()
+    clear()
 
     print("---------------------------------------------")
     print(" 1. 서버 실행")
@@ -20,7 +22,7 @@ def main():
     command1 = input("원하는 항목의 번호를 입력하고 엔터(Enter): ")
 
     if command1 == "1":
-        cls()
+        clear()
 
         run(app, host="0.0.0.0", port=50114)
 
@@ -45,7 +47,7 @@ def main():
 
 
 def sub():
-    cls()
+    clear()
 
     print("---------------------------------------------")
     print(" 1. 메인 화면으로 복귀")
@@ -64,8 +66,8 @@ def sub():
         sub()
 
 
-def cls():
-    os.system("cls")
+def clear():
+    os.system(CLEAR)
 
 
 if __name__ == "__main__":
