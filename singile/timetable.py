@@ -41,7 +41,7 @@ async def get_timetable(when: int, payload: dict):
             text = str(e)
 
         else:
-            week_data = await Timetable("신길중학교")
+            week_data = await _Timetable("신길중학교")
 
             try:
                 timetable: list = week_data[grade][class_][weekday]
@@ -67,7 +67,7 @@ async def get_timetable(when: int, payload: dict):
 
 
 # internals ------------------------------------------------------------
-class Timetable:
+class _Timetable:
     async def __new__(cls, name: str):
         instance = super().__new__(cls)
 
@@ -77,15 +77,13 @@ class Timetable:
 
     async def init(self, name: str):
         response = await get(f"{COMCIGAN_URL}/st")
-
         soup = BeautifulSoup(response, "lxml")
 
-        del response  # XXX Is this necessary?
+        del response  # XXX: Is this necessary?
 
         script: str = soup.find_all("script")[1].contents[0]
 
         route = search(REGEX_ROUTE, script)
-
         PREFIX = search(REGEX_PREFIX, script)[1:-1]
 
         daily_data_number = extract_int(search(REGEX_DAILY_DATA, script))
@@ -105,7 +103,7 @@ class Timetable:
         )
         school_list: list = loads(response.replace("\0", ""))["학교검색"]
 
-        del response  # XXX Is this necessary?
+        del response  # XXX: Is this necessary?
 
         if school_list:
             school_code: int = school_list[0][3]

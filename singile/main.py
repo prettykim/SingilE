@@ -12,14 +12,24 @@ app = FastAPI()
 
 # basic scenario -------------------------------------------------------
 @app.post("/fallback")
-async def fallback():
-    return jsonify(
-        f"""죄송해요. 잘 이해하지 못했어요.
+async def fallback(payload: Request):
+    json: dict = await payload.json()
+    utterance = json["userRequest"]["utterance"]
+
+    if utterance == "ㅎㅇ":
+        text = "ㅎㅇ"
+
+    elif utterance == "민주공주":
+        text = "✨👸✨"
+
+    else:
+        text = f"""죄송해요. 잘 이해하지 못했어요.
 입력 가능한 명령어는
 다음과 같아요.
 
 {COMMANDS}"""
-    )
+
+    return jsonify(text)
 
 
 # custom scenario ------------------------------------------------------

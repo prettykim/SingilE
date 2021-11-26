@@ -30,7 +30,7 @@ async def _get_academic_schedule(when: int):
     month = (date.today() + relativedelta(months=when)).month
     year = (date.today() + relativedelta(months=when)).year
 
-    html = await post(
+    response = await post(
         "https://singil.sen.ms.kr/177194/subMenu.do",
         {
             "siteId": "SEI_00002286",
@@ -40,8 +40,7 @@ async def _get_academic_schedule(when: int):
             "srhSchdulMonth": month,
         },
     )
-
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(response, "lxml")
 
     header = [f"<이번 달({month}월) 학사일정>"] if when == 0 else [f"<다음 달({month}월) 학사일정>"]
 

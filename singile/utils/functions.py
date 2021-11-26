@@ -10,7 +10,7 @@ def extract_id(payload: dict) -> str:
     return payload["userRequest"]["user"]["id"]
 
 
-def extract_int(string: str) -> int:
+def extract_int(string: str):
     return int("".join([x for x in string if x.isdigit()]))
 
 
@@ -18,7 +18,7 @@ def jsonify(text: str):
     return {"version": "2.0", "template": {"outputs": [{"simpleText": {"text": text}}]}}
 
 
-def search(regex: str, string: str) -> str:
+def search(regex: str, string: str):
     return re.search(regex, string).group()
 
 
@@ -51,7 +51,7 @@ async def get_info(payload: dict):
     return grade, class_
 
 
-async def post(url: str, data: dict = None):
+async def post(url: str, data: dict):
     async with ClientSession() as session:
         async with session.post(url, data=data) as response:
             return await response.text()

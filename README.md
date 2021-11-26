@@ -20,17 +20,16 @@
 
 다양한 방법으로 이 프로젝트에 기여하실 수 있습니다. 예를 들어:
 
-- [버그 제보하기/기능 요청하기](https://github.com/HolyDiamonds7/SingilE/issues)
-- [바뀐 소스 코드](https://github.com/HolyDiamonds7/SingilE/pulls) 검토하기
+- 버그 제보하기
+- 기능 요청하기
 
 만약 소스 코드에 직접적으로 기여하고 싶으시다면, [가이드라인](CONTRIBUTING.md)을 확인해 주시기 바랍니다.
 
 ## TODO
 
-- [ ] Implement weather forecast
 - [ ] Implement lifetime of cache
 - [ ] Add images in README.md
-- [ ] Draw up guideline
+- [ ] Draw up CONTRIBUTING.md
 
 ## License
 

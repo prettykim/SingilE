@@ -1,8 +1,9 @@
 import re
 from datetime import date, timedelta
 
-from aiohttp import ClientSession
 from bs4 import BeautifulSoup
+
+from .utils.functions import get
 
 
 # public interface -----------------------------------------------------
@@ -14,7 +15,6 @@ async def get_cafeteria(when: int):
 
     except KeyError:
         parser = _Cafeteria(when)
-
         text = await parser.get_cafeteria()
 
         _cache[day] = text
@@ -46,14 +46,10 @@ class _Cafeteria:
         else:
             day = "0" + self.day if len(self.day) == 1 else self.day
             month = str((date.today() + timedelta(days=self.when)).month)
-
             day_and_month = ("0" + month if len(month) == 1 else month) + "." + day
 
-            async with ClientSession() as session:
-                async with session.get("https://singil.sen.ms.kr/index.do") as request:
-                    html = await request.text()
-
-            soup = BeautifulSoup(html, "lxml")
+            response = await get("https://singil.sen.ms.kr/index.do")
+            soup = BeautifulSoup(response, "lxml")
 
             text = f"{self.date_}({self.day}일){josa} 휴일이라 급식이 없네요."
 
