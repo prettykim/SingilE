@@ -4,8 +4,10 @@
         ".venv/": true
     },
     "python.formatting.provider": "black",
+    "python.linting.mypyEnabled": true,
     "python.linting.pylintArgs": [
         "-d C0114,C0115,C0116"
     ],
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "python.analysis.autoImportCompletions": false
 }
